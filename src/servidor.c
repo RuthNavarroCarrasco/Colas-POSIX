@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "comunicacion.h"
+#include "implementacion.h"
 
 mqd_t  q_servidor;
 
