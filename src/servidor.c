@@ -31,6 +31,7 @@ void tratar_mensaje(void *mess) {
     //leemos y ejecutamos la petición
     if (mensaje.c_op == 0); //init
         //resultado = blabla
+        // Lo que está definido en claves.c
     if (mensaje.c_op  == 1);//set
         //resultado = bla bla
     if (mensaje.c_op == 2); //get 
