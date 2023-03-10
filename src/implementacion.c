@@ -1,9 +1,9 @@
-#include <studio.h>
+#include <stdio.h>
 #include <unistd.h>
 #include <dirent.h>
 #include "implementacion.h"
 #define peticion_root "../peticion/" // raiz para coger los ficheros
-#define formato_fichero ".txt"
+#define formato_fichero ".dat"      // definimos el formato de fichero. En este caso, extension .dat
 
 
 int init(){
@@ -18,49 +18,41 @@ int init(){
 
     //Recorremos el directorio
     while ((ent = readdir(dir)) != NULL) {
-        //Si es un fichero
-        if (ent->d_type == DT_REG) {
-            //Lo borramos
+            //Borrarmos todo el contenido
             remove(ent->d_name);
-        }
+        
     }
+
+    closedir(dir);
+
+    return 0;
 }
 
-int set_value(int key, char *value1, int value2, double value3) {
-    
-    //Esta función crea un fichero que representa la clave key con los valores value1, value2 y value3
+int set_value(struct tupla_pet peticion) {
+
     FILE *fichero_peticion;
     char str_key[20];
-    char peticion[50] = {0};
+    char nombre_fichero[50];
 
-    sprintf(str_key, "%d", key);
-    sprintf(peticion, "%s%s%s", peticion_root, str_key, formato_fichero);
-
-    // Comprobamos si ya hay existencia del fichero
-    if (access(peticion, F_OK) == 0) {
-        perror("La clave ya existe");
-        return -1;
-    }
-
-    fichero_peticion = fopen(peticion, "w");
-    if (fichero_peticion == NULL) {
-        perror("Error al abrir el fichero");
-        return -1;
-    }
-
-    //escribimos en el fichero
-    fprintf(fichero_peticion, "value1: %s\nvalue2: %d\nvalue3: %f", value1, value2, value3);
-
-    //cerramos el fichero
-    fclose(fichero_peticion);
-    return 0;
+    sprintf(str_key, "%d", peticion.clave);
+    sprintf(nombre_fichero, "%s%s%s", peticion_root, str_key, formato_fichero);
     
+    fichero_peticion = fopen(nombre_fichero, "wb");
+
+    if (fichero_peticion != NULL) {
+        fwrite(&peticion, sizeof(struct tupla_pet), 1, fichero_peticion); 
+        fclose(fichero_peticion);  
+    } else {
+        printf("No se pudo abrir el archivo.\n");
+    }
+
+   return 0;
 }
 
-int get_value(int key, char *value1, int value2, double value3){
+int get_value(struct tupla_pet peticion){
     //Esta función devuelve el valor de las valores de la clave key
-
-    FILE *fichero_peticion;
+    
+/*
     char str_key[20];
     char peticion[50];
 
@@ -82,15 +74,15 @@ int get_value(int key, char *value1, int value2, double value3){
     if (fichero_peticion == NULL) {
         perror("Error al abrir el fichero");
         return -1;
-    }
+    }*/
 
     return 0;
 }
 
 
-int modify_value(int key, char *value1, int value2, double value3) {
+int modify_value(struct tupla_pet peticion) {
     //Esta función modifica el fichero que representa la clave key con los nuevos valores
-
+/*
     FILE *fichero_peticion;
     char str_key[20];
     char peticion[50] = {0};
@@ -98,7 +90,8 @@ int modify_value(int key, char *value1, int value2, double value3) {
     sprintf(str_key, "%d", key);
     sprintf(peticion, "%s%s%s", peticion_root, str_key, formato_fichero);
     
-
+*/
+    return 0;
 
 }
 
@@ -143,6 +136,6 @@ int exist (int key){
         printf("El fichero no existe");
         return 0;
     }
-    printf("El fichero sí existe")
+    printf("El fichero sí existe");
     return 1;
 }

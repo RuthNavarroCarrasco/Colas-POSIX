@@ -8,20 +8,24 @@
 
 mqd_t  q_servidor;
 
+// El servidor tiene que ser multihilo. Siempre los hacemos detach.
+// Cada vez que leemos algo del servidor creamos un nuevo hilo.
+
+
 //mutex
 pthread_mutex_t mutex_mensaje;
 int mensaje_no_copiado = true;
 pthread_cond_t cond_mensaje;
 
 void tratar_mensaje(void *mess) {
-    struct tupla_pet mensaje;	/* mensaje local */
+    struct peticion mensaje;	/* mensaje local */
 	mqd_t q_cliente;		/* cola del cliente */
 	int resultado;		/* resultado de la operación */
 
     pthread_mutex_lock(&mutex_mensaje);
 
     //copia la petición a la variable mensaje
-    mensaje = (*(struct tupla_pet *) mess);
+    mensaje = (*(struct peticion *) mess);
     //Como ya se ha copiado el mensaje, despetarmos al servidor 
     mensaje_no_copiado = false;
 
@@ -31,20 +35,17 @@ void tratar_mensaje(void *mess) {
 
     //leemos y ejecutamos la petición
     if (mensaje.c_op == 0); //init
-        //resultado = blabla
-        // Lo que está definido en claves.c
+        //init();
     if (mensaje.c_op  == 1);//set
-        //resultado = bla bla
+        //set_value();
     if (mensaje.c_op == 2); //get 
-        //resultado = blabla
+        //get_value();
     if (mensaje.c_op  == 3);//mod
-        //resultado = bla bla
+        //modify_value();
     if (mensaje.c_op == 4); //del
-        //resultado = blabla
+        //delete_key();
     if (mensaje.c_op  == 5);//exit
-        //resultado = bla bla
-    if (mensaje.c_op == 6); //copy
-        //resultado = blabla
+       // exist_key();
 
 
     //se devuelve el resultado al cliente enviándolo a su cola
@@ -59,7 +60,7 @@ void tratar_mensaje(void *mess) {
 
 
 int main(void){
-    struct tupla_pet mess;
+    struct peticion mess;
     struct mq_attr attr;
 
 	pthread_attr_t t_attr;		// atributos de los threads 
