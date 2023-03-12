@@ -5,7 +5,7 @@ int init();
 
 int set_value(struct tupla_pet peticion);
 
-int get_value(struct tupla_pet peticion);
+struct tupla_pet get_value(struct tupla_pet peticion);
 
 int modify_value(struct tupla_pet peticion);
 

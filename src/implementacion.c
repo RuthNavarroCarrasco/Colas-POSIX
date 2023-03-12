@@ -49,35 +49,36 @@ int set_value(struct tupla_pet peticion) {
    return 0;
 }
 
-int get_value(struct tupla_pet peticion){
-    //Esta función devuelve el valor de las valores de la clave key
-    
-/*
+struct tupla_pet get_value(struct tupla_pet tupla){
+    //Esta función devuelve un struct que representa los valores de la clave key
+
+    //creamos el struct que vamos a devolver
+    struct tupla_pet get;
+
+
     char str_key[20];
     char peticion[50];
+    char nombre_fichero[50];
 
-    sprintf(str_key, "%d", key);
-    strcpy(peticion, peticion_root);
-    strcat(peticion, str_key);
+    sprintf(str_key, "%d", tupla.clave);
+    sprintf(nombre_fichero, "%s%s%s", peticion_root, str_key, formato_fichero);
 
-    //char* value1
-    //int value2
-    //double value3; no del mismo type
     // Comprobamos si no hay existencia del fichero
-    if (access(peticion, F_OK) != 0) {
+    if (access(nombre_fichero, F_OK) != 0) {
         perror("La clave no existe");
-        return -1;
     }
-    
-    //Abrimos el fichero
-    fichero_peticion = fopen(peticion, "r");
-    if (fichero_peticion == NULL) {
-        perror("Error al abrir el fichero");
-        return -1;
-    }*/
 
-    return 0;
+   FILE *archivo = fopen(nombre_fichero, "rb");  // Abrir el archivo para lectura binaria
+    if (archivo != NULL) {
+        fread(&get, sizeof(struct peticion_get), 1, archivo);  // Leer la estructura desde el archivo
+        fclose(archivo);  // Cerrar el archivo
+    } else {
+        printf("No se pudo abrir el archivo.\n");
+    }
+
+    return get;
 }
+
 
 
 int modify_value(struct tupla_pet peticion) {
