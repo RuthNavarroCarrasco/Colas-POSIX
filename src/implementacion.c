@@ -36,7 +36,13 @@ int set_value(struct tupla_pet peticion) {
 
     sprintf(str_key, "%d", peticion.clave);
     sprintf(nombre_fichero, "%s%s%s", peticion_root, str_key, formato_fichero);
-    
+    // Comprobamos si no hay existencia del fichero
+
+    if (access(nombre_fichero, F_OK) != 0) {
+        perror("La clave no existe");
+        return -1;
+    }
+
     fichero_peticion = fopen(nombre_fichero, "wb");
 
     if (fichero_peticion != NULL) {
@@ -45,6 +51,7 @@ int set_value(struct tupla_pet peticion) {
     } else {
         printf("No se pudo abrir el archivo.\n");
     }
+    fclose(fichero_peticion);
 
    return 0;
 }
@@ -54,7 +61,6 @@ struct tupla_pet get_value(struct tupla_pet tupla){
 
     //creamos el struct que vamos a devolver
     struct tupla_pet get;
-
 
     char str_key[20];
     char peticion[50];
@@ -70,12 +76,12 @@ struct tupla_pet get_value(struct tupla_pet tupla){
 
    FILE *archivo = fopen(nombre_fichero, "rb");  // Abrir el archivo para lectura binaria
     if (archivo != NULL) {
-        fread(&get, sizeof(struct peticion_get), 1, archivo);  // Leer la estructura desde el archivo
+        fread(&get, sizeof(struct tupla_pet), 1, archivo);  // Leer la estructura desde el archivo
         fclose(archivo);  // Cerrar el archivo
     } else {
         printf("No se pudo abrir el archivo.\n");
     }
-
+    fclose(archivo);
     return get;
 }
 
@@ -92,6 +98,35 @@ int modify_value(struct tupla_pet peticion) {
     sprintf(peticion, "%s%s%s", peticion_root, str_key, formato_fichero);
     
 */
+    char str_key[20];
+    char peticion[50];
+    char nombre_fichero[50];
+
+    sprintf(str_key, "%d", peticion.clave);
+    sprintf(nombre_fichero, "%s%s%s", peticion_root, str_key, formato_fichero);
+
+    FILE *archivo = fopen(nombre_fichero, "r+b");
+    if (archivo == NULL) {
+        perror("Error al abrir el archivo\n");
+        return -1;
+    }
+
+    // Mover el puntero de posición al inicio del archivo
+    fseek(archivo, 0, SEEK_SET);
+
+    // Leer el registro original
+    struct tupla_pet peticion_original;
+    fread(&peticion_original, sizeof(struct tupla_pet), 1, archivo);
+
+    // Mover el puntero de posición al inicio del archivo
+    fseek(archivo, 0, SEEK_SET);
+
+    // Escribir el nuevo registro
+    fwrite(&peticion, sizeof(struct tupla_pet), 1, archivo);
+
+    fclose(archivo);
+    printf("Se modificó\n");
+
     return 0;
 
 }
