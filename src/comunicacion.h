@@ -6,7 +6,10 @@
 #define DEL 4
 #define EXIST 5
 #define COPY 6
-//TODO: preguntar sobre los códigos de operación
+
+// Usamos esto para evitar problema de redefinición
+#ifndef TUPLA_PET_H
+#define TUPLA_PET_H
 
 struct tupla_pet {
     int clave;              /* clave */
@@ -15,6 +18,12 @@ struct tupla_pet {
     double valor3;          /* valor3 */
 };
 
+#endif /* TUPLA_PET_H */
+
+
+// Usamos esto para evitar problema de redefinición
+#ifndef PETICION_H
+#define PETICION_H
 
 struct peticion {
     struct tupla_pet tupla_peticion;  /* tupla de la peticion */
@@ -22,8 +31,16 @@ struct peticion {
     int c_op;               /* codigo de operacion, 0 (INIT), 1 (SET), 2 (GET), 3 (MOD), 4 (DEL), 5 (EXIST), 6 (COPY) */
 };
 
+#endif /* PETICION_H */
+
+
+// Usamos esto para evitar problema de redefinición
+#ifndef RESPUESTA_H
+#define RESPUESTA_H
 
 struct respuesta {
     struct tupla_pet tupla_peticion;  /* tupla de la peticion */
     int code_error;         // código de error
 };
+
+#endif /* RESPUESTA_H */

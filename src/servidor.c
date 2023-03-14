@@ -20,7 +20,7 @@ pthread_cond_t cond_mensaje;
 void tratar_mensaje(void *mess) {
     struct peticion mensaje;	/* mensaje local */
 	mqd_t q_cliente;		/* cola del cliente */
-	int resultado;		/* resultado de la operación */
+	// UNUSED: int resultado;		/* resultado de la operación */
 
     pthread_mutex_lock(&mutex_mensaje);
 
@@ -32,7 +32,7 @@ void tratar_mensaje(void *mess) {
     pthread_cond_signal(&cond_mensaje);
 
 	pthread_mutex_unlock(&mutex_mensaje);
-
+/*
     //leemos y ejecutamos la petición
     if (mensaje.c_op == 0); //init
         //init();
@@ -46,7 +46,7 @@ void tratar_mensaje(void *mess) {
         //delete_key();
     if (mensaje.c_op  == 5);//exit
        // exist_key();
-
+*/
 
     //se devuelve el resultado al cliente enviándolo a su cola
     q_cliente = mq_open(mensaje.q_name, O_WRONLY);

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <string.h>
 #include "implementacion.h"
 #define peticion_root "../peticion/" // raiz para coger los ficheros
 #define formato_fichero ".dat"      // definimos el formato de fichero. En este caso, extension .dat
@@ -63,7 +64,7 @@ struct tupla_pet get_value(struct tupla_pet tupla){
     struct tupla_pet get;
 
     char str_key[20];
-    char peticion[50];
+    //char peticion[50];
     char nombre_fichero[50];
 
     sprintf(str_key, "%d", tupla.clave);
@@ -91,7 +92,7 @@ int modify_value(struct tupla_pet peticion) {
     //Esta función modifica el fichero que representa la clave key con los nuevos valores
 
     char str_key[20];
-    char peticion[50];
+    //char peticion[50];
     char nombre_fichero[50];
 
     sprintf(str_key, "%d", peticion.clave);
@@ -125,7 +126,7 @@ int modify_value(struct tupla_pet peticion) {
 
 int delete_key(int key){
     //esta función elimina el fichero que representa la clave key
-    FILE *fichero_peticion;
+  //  FILE *fichero_peticion;
     char str_key[20];
     char peticion[50];
     
@@ -146,12 +147,13 @@ int delete_key(int key){
         perror("Error al eliminar el fichero");
         return -1;
     }
+    return 0;
 
 }
 
 int exist (int key){
     //Esta función devuelve 1 si existe el fichero que representa la clave key y 0 en caso contrario
-    FILE *fichero_peticion;
+    //FILE *fichero_peticion;
     char str_key[20];
     char peticion[50];
 
