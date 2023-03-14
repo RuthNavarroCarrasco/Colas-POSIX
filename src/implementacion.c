@@ -89,15 +89,7 @@ struct tupla_pet get_value(struct tupla_pet tupla){
 
 int modify_value(struct tupla_pet peticion) {
     //Esta función modifica el fichero que representa la clave key con los nuevos valores
-/*
-    FILE *fichero_peticion;
-    char str_key[20];
-    char peticion[50] = {0};
 
-    sprintf(str_key, "%d", key);
-    sprintf(peticion, "%s%s%s", peticion_root, str_key, formato_fichero);
-    
-*/
     char str_key[20];
     char peticion[50];
     char nombre_fichero[50];
