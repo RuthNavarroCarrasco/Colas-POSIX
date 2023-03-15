@@ -26,9 +26,10 @@ struct tupla_pet {
 #define PETICION_H
 
 struct peticion {
-    struct tupla_pet tupla_peticion;  /* tupla de la peticion */
-    char q_name[MAXSIZE];   /* nombre de la cola cliente */
-    int c_op;               /* codigo de operacion, 0 (INIT), 1 (SET), 2 (GET), 3 (MOD), 4 (DEL), 5 (EXIST), 6 (COPY) */
+    struct tupla_pet tupla_peticion;     /* tupla de la peticion */
+    int clave2;                         //OPCIONAL (solo para COPY)
+    char q_name[MAXSIZE];               /* nombre de la cola cliente */
+    int c_op;                           /* codigo de operacion, 0 (INIT), 1 (SET), 2 (GET), 3 (MOD), 4 (DEL), 5 (EXIST), 6 (COPY) */
 };
 
 #endif /* PETICION_H */
@@ -39,8 +40,8 @@ struct peticion {
 #define RESPUESTA_H
 
 struct respuesta {
-    struct tupla_pet tupla_peticion;  /* tupla de la peticion */
-    int code_error;         // código de error
+    struct tupla_pet tupla_peticion;    /* tupla de la peticion */
+    int code_error;                     // código de error. 0 en caso de éxito, -1 en caso de error
 };
 
-#endif /* RESPUESTA_H */
+#endif 
