@@ -55,14 +55,14 @@ void *tratar_mensaje(void *mess) {
 	if (q_cliente == -1){
 		perror("No se puede abrir la cola del cliente");
 		mq_close(q_servidor);
-		mq_unlink("/SERVIDOR_SUMA2");
+		mq_unlink("/SERVIDOR");
 	}
 
     else {
 		if (mq_send(q_cliente, (const char *) &respuesta, sizeof(struct respuesta), 0) <0) {
 			perror("mq_send");
 			mq_close(q_servidor);
-			mq_unlink("/SERVIDOR_SUMA2");
+			mq_unlink("/SERVIDOR");
 			mq_close(q_cliente);
 		}
 	}
@@ -74,7 +74,7 @@ void *tratar_mensaje(void *mess) {
 
 
 
-int main_server(void){
+int main(void){
     struct peticion mess;
     struct mq_attr attr;
 

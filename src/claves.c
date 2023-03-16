@@ -30,8 +30,12 @@ int send_recieve(struct peticion *peticion) {
         return -1 ;
     }
 
+    else {
+        printf("Cola del servidor abierta correctamente\n");}
 
-    sprintf(q_client, "%s%d", "/CLIENTE_", getpid()) ;
+
+    //sprintf(q_client, "%s", peticion->q_name) ;
+    strcpy(q_client, peticion->q_name);
     qc = mq_open(q_client, O_CREAT|O_RDONLY, 0664, &attr) ;  // se abre la cola del cliente
     if (qc == -1) 
     {
@@ -39,18 +43,26 @@ int send_recieve(struct peticion *peticion) {
         mq_close(qs) ;
         return -1;
     }
-    strcpy(peticion->q_name, q_client);
+
+    else{
+        printf("Cola  %s del cliente abierta correctamente\n", q_client);
+    }
+    //strcpy(peticion->q_name, q_client);
     
 
     ret = mq_send(qs, (char *)&peticion, sizeof(struct peticion), 0) ; //enviar petición al servidor
     if (ret < 0) 
-    {
+    {   
+        
         perror("mq_send: ") ;
         mq_close(qs) ; // en caso de error cerramos cola del servidor y del cliente
         mq_close(qc) ;
         mq_unlink(q_client) ;
         return -1;
     }
+
+    else{
+        printf("Peticion enviada correctamente al servidor\n");}
 
 
     ret = mq_receive(qc, (char *)&respuesta, sizeof(struct respuesta), 0) ; //recibir respuesta del servidor
@@ -105,6 +117,8 @@ int set_value(int key, char *value1, int *value2, double value3) {
     strcpy(peticion.tupla_peticion.valor1, value1);
     peticion.tupla_peticion.valor2 = *value2;
     peticion.tupla_peticion.valor3 = value3;
+    strcpy(peticion.q_name, "/cliente1");
+    
     peticion.c_op = 1;
     int code_error = send_recieve(&peticion);
 
