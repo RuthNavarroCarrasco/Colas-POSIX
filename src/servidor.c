@@ -19,6 +19,7 @@ pthread_cond_t cond_mensaje;
 
 void *tratar_mensaje(void *mess) {
     struct peticion mensaje;	/* mensaje local */
+    struct respuesta respuesta;	/* respuesta local */
 	mqd_t q_cliente;		/* cola del cliente */
     int resultado;		/* resultado de la operación */
 
@@ -36,9 +37,9 @@ void *tratar_mensaje(void *mess) {
     //leemos y ejecutamos la petición
     if (mensaje.c_op == 0) //init
         resultado = init_implementacion();
-   /* if (mensaje.c_op  == 1)//set
-        set_value_implementacion();
-    if (mensaje.c_op == 2); //get 
+   if (mensaje.c_op  == 1)//set
+        resultado = set_value_implementacion(mensaje.tupla_peticion);
+    /* if (mensaje.c_op == 2); //get 
         get_value_implementacion();
     if (mensaje.c_op  == 3)//mod
         modify_value_implementacion();
@@ -47,6 +48,7 @@ void *tratar_mensaje(void *mess) {
     if (mensaje.c_op  == 5)//exit
        exist_key_implementacion();*/
 
+    respuesta.code_error = resultado;
 
     //se devuelve el resultado al cliente enviándolo a su cola
     q_cliente = mq_open(mensaje.q_name, O_WRONLY);
@@ -55,6 +57,16 @@ void *tratar_mensaje(void *mess) {
 		mq_close(q_servidor);
 		mq_unlink("/SERVIDOR_SUMA2");
 	}
+
+    else {
+		if (mq_send(q_cliente, (const char *) &respuesta, sizeof(struct respuesta), 0) <0) {
+			perror("mq_send");
+			mq_close(q_servidor);
+			mq_unlink("/SERVIDOR_SUMA2");
+			mq_close(q_cliente);
+		}
+	}
+	pthread_exit(0);
 
     return NULL;
 }
