@@ -10,22 +10,6 @@
 #define formato_fichero ".dat"      // definimos el formato de fichero. En este caso, extension .dat
 
 
-// Es una biblioteca. Expone las llamadas del API para que se comunique con el servidor
-// No implementamos el sistema de tuplas. La interfaz que tengo entre la app con la comunicación que va al servidor.
-
-// Crear la cola con el servidor
-// Enviamos siempre el mismo mensaje. Hacemos factor comun y hacemos el mensaje que sea lo más genérico posible
-
-// Los mensajes de respuesta: hacemos una tupla
-/*
-
-crear cola cliente
-crear cola servidor
-preparar los mensajes
-*/
-
-
-
 int send_recieve(struct peticion *peticion) {
     int ret;
     char q_client[1024];
@@ -55,7 +39,7 @@ int send_recieve(struct peticion *peticion) {
         mq_close(qs) ;
         return -1;
     }
-    strcopy(peticion->q_name, q_client);
+    strcpy(peticion->q_name, q_client);
     
 
     ret = mq_send(qs, (char *)&peticion, sizeof(struct peticion), 0) ; //enviar petición al servidor
@@ -104,20 +88,24 @@ int send_recieve(struct peticion *peticion) {
 
 
 int init() {
+    struct peticion peticion = {0};
+    peticion.c_op = 0;
 
+    int code_error = send_recieve(&peticion);
+    return code_error;
 }
 
 int set_value(int key, char *value1, int *value2, double value3) {
     //Esta función crea la petición con el código de operación correspondiente a INIT y llama a send_receive para enviarla y recibir la respuesta
     
     //creamos la peticion 
-    struct peticion peticion;
-    strcopy(peticion.tupla_peticion.clave, key);
-    strcopy(peticion.tupla_peticion.valor1, value1);
-    strcopy(peticion.tupla_peticion.valor2, value1);
-    strcopy(peticion.tupla_peticion.valor3, value3);
-    peticion.c_op = 1; 
 
+    struct peticion peticion = {0};
+    peticion.tupla_peticion.clave = key;
+    strcpy(peticion.tupla_peticion.valor1, value1);
+    peticion.tupla_peticion.valor2 = *value2;
+    peticion.tupla_peticion.valor3 = value3;
+    peticion.c_op = 1;
     int code_error = send_recieve(&peticion);
 
     return code_error;
@@ -126,13 +114,12 @@ int set_value(int key, char *value1, int *value2, double value3) {
 
 int get_value(int key, char *value1, int *value2, double value3) {
     //creamos la peticion 
-    struct peticion peticion;
-    strcopy(peticion.tupla_peticion.clave, key);
-    strcopy(peticion.tupla_peticion.valor1, value1);
-    strcopy(peticion.tupla_peticion.valor2, value1);
-    strcopy(peticion.tupla_peticion.valor3, value3);
-    peticion.c_op = 2; 
-
+    struct peticion peticion = {0};
+    peticion.tupla_peticion.clave = key;
+    strcpy(peticion.tupla_peticion.valor1, value1);
+    peticion.tupla_peticion.valor2 = *value2;
+    peticion.tupla_peticion.valor3 = value3;
+    peticion.c_op = 2;
     int code_error = send_recieve(&peticion);
 
     return code_error;
@@ -140,44 +127,52 @@ int get_value(int key, char *value1, int *value2, double value3) {
 
 int modify_value(int key, char *value1, int *value2, double value3){
     //creamos la peticion 
-    struct peticion peticion;
-    strcopy(peticion.tupla_peticion.clave, key);
-    strcopy(peticion.tupla_peticion.valor1, value1);
-    strcopy(peticion.tupla_peticion.valor2, value1);
-    strcopy(peticion.tupla_peticion.valor3, value3);
-    peticion.c_op = 3; 
 
+    struct peticion peticion = {0};
+    peticion.tupla_peticion.clave = key;
+    strcpy(peticion.tupla_peticion.valor1, value1);
+    peticion.tupla_peticion.valor2 = *value2;
+    peticion.tupla_peticion.valor3 = value3;
+    peticion.c_op = 3;
     int code_error = send_recieve(&peticion);
 
     return code_error;
 }
+
 
 int delete_key(int id) {
     //creamos la peticion 
-    struct peticion peticion;
-    strcopy(peticion.tupla_peticion.clave, id);
-    peticion.c_op = 4; 
+    struct peticion peticion = {
+        .tupla_peticion.clave = id,
+        .c_op = 4
+    };
+
     int code_error = send_recieve(&peticion);
 
     return code_error;
 }
+
 
 
 int exist_key(int id) {
-    struct peticion peticion;
-    strcopy(peticion.tupla_peticion.clave, id);
-    peticion.c_op = 5; 
+    struct peticion peticion = {
+        .tupla_peticion.clave = id,
+        .tupla_peticion.valor2 = 0,
+        .c_op = 5
+    };
     int code_error = send_recieve(&peticion);
 
     return code_error;
 }
 
+
 int copy_key(int key1, int key2) 
-{
-    struct peticion peticion;
-    strcopy(peticion.tupla_peticion.clave, key1);
-    strcopy(peticion.clave2, key1);
-    peticion.c_op = 6; 
+{   
+    struct peticion peticion = {
+        .tupla_peticion.clave = key1,
+        .clave2 = key2,
+        .c_op = 6
+    };
     int code_error = send_recieve(&peticion);
 
     return code_error;

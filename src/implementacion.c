@@ -7,7 +7,7 @@
 #define formato_fichero ".dat"      // definimos el formato de fichero. En este caso, extension .dat
 
 
-int init(){
+int init_implementacion(){
     //Esta función borra todos los ficheros que representan las claves en el directorio peticion_root
     DIR *dir;
     struct dirent *ent;
@@ -29,7 +29,8 @@ int init(){
     return 0;
 }
 
-int set_value(struct tupla_pet peticion) {
+
+int set_value_implementacion(struct tupla_pet peticion) {
 
     FILE *fichero_peticion;
     char str_key[20];
@@ -57,7 +58,7 @@ int set_value(struct tupla_pet peticion) {
    return 0;
 }
 
-struct tupla_pet get_value(struct tupla_pet tupla){
+struct tupla_pet get_value_implementacion(struct tupla_pet tupla){
     //Esta función devuelve un struct que representa los valores de la clave key
 
     //creamos el struct que vamos a devolver
@@ -88,7 +89,7 @@ struct tupla_pet get_value(struct tupla_pet tupla){
 
 
 
-int modify_value(struct tupla_pet peticion) {
+int modify_value_implementacion(struct tupla_pet peticion) {
     //Esta función modifica el fichero que representa la clave key con los nuevos valores
 
     char str_key[20];
@@ -124,7 +125,7 @@ int modify_value(struct tupla_pet peticion) {
 
 }
 
-int delete_key(int key){
+int delete_key_implementacion(int key){
     //esta función elimina el fichero que representa la clave key
   //  FILE *fichero_peticion;
     char str_key[20];
@@ -151,7 +152,7 @@ int delete_key(int key){
 
 }
 
-int exist (int key){
+int exist_implementacion(int key){
     //Esta función devuelve 1 si existe el fichero que representa la clave key y 0 en caso contrario
     //FILE *fichero_peticion;
     char str_key[20];
