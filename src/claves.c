@@ -50,7 +50,8 @@ int send_recieve(struct peticion *peticion) {
     //strcpy(peticion->q_name, q_client);
     
 
-    ret = mq_send(qs, (char *)&peticion, sizeof(struct peticion), 0) ; //enviar petición al servidor
+    ret = mq_send(qs, (char *)&peticion, sizeof(char *), 0) ; 
+    printf("TAMAÑO ESTRUCT %ld \n", sizeof (char *));//enviar petición al servidor
     if (ret < 0) 
     {   
         
