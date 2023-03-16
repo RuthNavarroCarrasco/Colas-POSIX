@@ -5,7 +5,7 @@ TARGET = nombre_del_ejecutable
 SRCS = implementacion.c cliente.c servidor.c claves.c
 
 # Flags de compilación
-CFLAGS = -Wall -Wextra -pedantic
+CFLAGS = -Wall -Wextra -pedantic -pthread
 
 # Comando de compilación
 CC = gcc

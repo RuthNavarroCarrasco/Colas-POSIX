@@ -17,10 +17,10 @@ pthread_mutex_t mutex_mensaje;
 int mensaje_no_copiado = true;
 pthread_cond_t cond_mensaje;
 
-void tratar_mensaje(void *mess) {
+void *tratar_mensaje(void *mess) {
     struct peticion mensaje;	/* mensaje local */
 	mqd_t q_cliente;		/* cola del cliente */
-	// UNUSED: int resultado;		/* resultado de la operación */
+    int resultado;		/* resultado de la operación */
 
     pthread_mutex_lock(&mutex_mensaje);
 
@@ -32,21 +32,21 @@ void tratar_mensaje(void *mess) {
     pthread_cond_signal(&cond_mensaje);
 
 	pthread_mutex_unlock(&mutex_mensaje);
-/*
+
     //leemos y ejecutamos la petición
-    if (mensaje.c_op == 0); //init
-        //init();
-    if (mensaje.c_op  == 1);//set
-        //set_value();
+    if (mensaje.c_op == 0) //init
+        resultado = init_implementacion();
+   /* if (mensaje.c_op  == 1)//set
+        set_value_implementacion();
     if (mensaje.c_op == 2); //get 
-        //get_value();
-    if (mensaje.c_op  == 3);//mod
-        //modify_value();
-    if (mensaje.c_op == 4); //del
-        //delete_key();
-    if (mensaje.c_op  == 5);//exit
-       // exist_key();
-*/
+        get_value_implementacion();
+    if (mensaje.c_op  == 3)//mod
+        modify_value_implementacion();
+    if (mensaje.c_op == 4) //del
+        delete_key_implementacion();
+    if (mensaje.c_op  == 5)//exit
+       exist_key_implementacion();*/
+
 
     //se devuelve el resultado al cliente enviándolo a su cola
     q_cliente = mq_open(mensaje.q_name, O_WRONLY);
@@ -55,11 +55,14 @@ void tratar_mensaje(void *mess) {
 		mq_close(q_servidor);
 		mq_unlink("/SERVIDOR_SUMA2");
 	}
+
+    return NULL;
 }
 
 
 
-int main(void){
+
+int main_server(void){
     struct peticion mess;
     struct mq_attr attr;
 
@@ -91,7 +94,7 @@ int main(void){
 			return -1;
 		}
 
-        if (pthread_create(&thid, &t_attr, (void *)tratar_mensaje, (void *)&mess)== 0) {
+        if (pthread_create(&thid, &t_attr, (void *(*)(void *))tratar_mensaje, (void *)&mess) == 0) {
             // se espera a que el thread copie el mensaje 
 			pthread_mutex_lock(&mutex_mensaje);
 			while (mensaje_no_copiado)
