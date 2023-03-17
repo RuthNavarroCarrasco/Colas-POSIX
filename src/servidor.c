@@ -10,25 +10,19 @@
 
 mqd_t  q_servidor;
 
-// El servidor tiene que ser multihilo. Siempre los hacemos detach.
-// Cada vez que leemos algo del servidor creamos un nuevo hilo.
-
 
 //mutex
 pthread_mutex_t mutex_mensaje;
 int mensaje_no_copiado;
 pthread_cond_t cond_mensaje;
 
-void tratar_mensaje(void *mess) {
+void tratar_mensaje(void *mess) 
+{
+    struct peticion mensaje;	        //mensaje local 
+    struct respuesta respuesta;	        // respuesta local 
+	mqd_t q_cliente;		            // cola del cliente 
     
-    
-    struct peticion mensaje;	/* mensaje local */
-    struct respuesta respuesta;	/* respuesta local */
-	mqd_t q_cliente;		/* cola del cliente */
-    
-    int resultado;		/* resultado de la operación */
-
-    
+    int resultado;		                // resultado de la operación 
 
     pthread_mutex_lock(&mutex_mensaje);
 
@@ -41,54 +35,53 @@ void tratar_mensaje(void *mess) {
     pthread_cond_signal(&cond_mensaje);
 
 	pthread_mutex_unlock(&mutex_mensaje);
-
-    //imrpirmir codigo de operacion
     
     //leemos y ejecutamos la petición
+
+    
    // if (mensaje.c_op == 0) //init
      //   resultado = init_implementacion();
-   if (mensaje.c_op  == 1){
-        fprintf(stderr, "El código de operacion del set value %d\n", mensaje.c_op);
-        //imprimir clave del mensaje
-        fprintf(stderr, "La clave del mensaje es %d\n", mensaje.tupla_peticion.clave);
-        resultado = set_value_implementacion(mensaje.tupla_peticion);}
+   if (mensaje.c_op  == 1)
+        resultado = set_value_implementacion(mensaje.tupla_peticion);
     /* if (mensaje.c_op == 2); //get 
         get_value_implementacion();*/
     if (mensaje.c_op  == 3)//mod
         resultado = modify_value_implementacion(mensaje.tupla_peticion);
-   // if (mensaje.c_op == 4) //del
-     //   delete_key_implementacion(mensaje.tupla_peticion.clave);
-    if (mensaje.c_op  == 5)//exit
+    if (mensaje.c_op == 4) //del
+        resultado = delete_key_implementacion(mensaje.tupla_peticion.clave);
+     if (mensaje.c_op  == 5)//exist
        exist_key_implementacion(mensaje.tupla_peticion.clave);
-
-
+    
     fprintf(stderr, "El valor del resultado es %d\n", resultado);
     respuesta.code_error = resultado;
 
     //se devuelve el resultado al cliente enviándolo a su cola
     q_cliente = mq_open(mensaje.q_name, O_WRONLY);
 
-	if (q_cliente == -1){
+	if (q_cliente == -1)
+    {
 		perror("No se puede abrir la cola del cliente");
 		mq_close(q_servidor);
 		mq_unlink(SERVIDOR);
 	}
 
-    else {
+    else 
+    {
         
-		if (mq_send(q_cliente, (char *)&respuesta, sizeof(struct respuesta), 0) <0) {
+		if (mq_send(q_cliente, (char *)&respuesta, sizeof(struct respuesta), 0) <0) 
+        {
 			perror("tratar_mensaje(): mq_send");
 			mq_close(q_servidor);
 			mq_unlink(SERVIDOR);
 			mq_close(q_cliente);
 		}
-        else{
+        
+        else
+        {
             printf("Respuesta enviada al cliente\n");
         }
 	}
 	pthread_exit(0);
-
-    
 }
 
 
@@ -139,8 +132,6 @@ int main(void){
         }
 			
     }
-
-
 
     return 0;
     

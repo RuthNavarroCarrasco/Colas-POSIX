@@ -5,11 +5,11 @@
 
 /*El cliente se encarga de enviar peticiones al servidor */
 
-int clave = 1;              
-char valor1[MAXSIZE] = "Envio";   
-int valor2 = 9;             
-double valor3 = 14.32;
-int clave2 = 55;
+int clave = 45;              
+char valor1[MAXSIZE] = "Envio Mensaje";   
+int valor2 = 4;             
+double valor3 = 1.72;
+int clave2 = 25;
 
 
 
@@ -42,11 +42,7 @@ int main()
         printf("modify_value(): código de error %d\n", code_error);
     }
 
-   // code_error = delete_key(clave);
-   // if (code_error < 0) 
-    //{
-      //  printf("delete_key(): código de error %d\n", code_error);
-    //}
+   
 
     code_error = exist_key(clave);
     if (code_error < 0) 
@@ -54,6 +50,7 @@ int main()
         printf("exist_key(): código de error %d\n", code_error);
     }
 
+    
     /*code_error = copy_key(clave, clave2);
     if (code_error < 0) 
     {

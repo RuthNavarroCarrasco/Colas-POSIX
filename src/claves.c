@@ -12,7 +12,8 @@
 
 #define SERVIDOR "/SERVIDOR34"
 
-int send_recieve(struct peticion *peticion) {
+int send_recieve(struct peticion *peticion) 
+{
     int ret;
     char q_client[1024];
     struct mq_attr attr;        // atributos de la cola
@@ -28,27 +29,23 @@ int send_recieve(struct peticion *peticion) {
     qs = mq_open(SERVIDOR, O_WRONLY) ;  //abrir cola del servidor
     if (qs == -1) 
     {
-        perror("mq_open: ") ;
+        perror("mq_open SERVIDOR: ") ;
         return -1 ;
     }
 
-    else {
-        printf("Cola del servidor abierta correctamente\n");}
 
 
     //sprintf(q_client, "%s", peticion->q_name) ;
-    fprintf(stderr, "El nombre de la cola es %s\n", peticion->q_name);
+    
     qc = mq_open( peticion->q_name, O_CREAT|O_RDONLY, 0664, &attr) ;  // se abre la cola del cliente
     if (qc == -1) 
     {
-        perror("mq_open aqui: ") ;
+        perror("mq_open CLIENTE: ") ;
         mq_close(qs) ;
         return -1;
     }
 
-    else{
-        printf("Cola  %s del cliente abierta correctamente\n", peticion->q_name);
-    }
+    
     //strcpy(peticion->q_name, q_client);
     
 
@@ -63,8 +60,7 @@ int send_recieve(struct peticion *peticion) {
         return -1;
     }
 
-    else{
-        printf("Peticion enviada correctamente al servidor\n");}
+    
 
 
     ret = mq_receive(qc, (char *)&respuesta, sizeof(struct respuesta), 0) ; //recibir respuesta del servidor
@@ -101,7 +97,8 @@ int send_recieve(struct peticion *peticion) {
 
 
 
-int init() {
+int init() 
+{
     struct peticion peticion = {0};
     peticion.c_op = 0;
 
@@ -109,7 +106,8 @@ int init() {
     return code_error;
 }
 
-int set_value(int key, char *value1, int value2, double value3) {
+int set_value(int key, char *value1, int value2, double value3) 
+{
     //Esta función crea la petición con el código de operación correspondiente a INIT y llama a send_receive para enviarla y recibir la respuesta
     
     //creamos la peticion 
@@ -128,7 +126,8 @@ int set_value(int key, char *value1, int value2, double value3) {
 }
 
 
-int get_value(int key, char *value1, int value2, double value3) {
+int get_value(int key, char *value1, int value2, double value3) 
+{
     //creamos la peticion 
     struct peticion peticion = {0};
     peticion.tupla_peticion.clave = key;
@@ -144,7 +143,9 @@ int get_value(int key, char *value1, int value2, double value3) {
     return code_error;
 }
 
-int modify_value(int key, char *value1, int value2, double value3){
+
+int modify_value(int key, char *value1, int value2, double value3)
+{
     //creamos la peticion 
 
     struct peticion peticion = {0};
@@ -161,7 +162,8 @@ int modify_value(int key, char *value1, int value2, double value3){
 }
 
 
-int delete_key(int id) {
+int delete_key(int id) 
+{
     //creamos la peticion 
     struct peticion peticion = {
         .tupla_peticion.clave = id,
@@ -177,7 +179,8 @@ int delete_key(int id) {
 
 
 
-int exist_key(int id) {
+int exist_key(int id) 
+{
     struct peticion peticion = {
         .tupla_peticion.clave = id,
         .tupla_peticion.valor2 = 0,

@@ -7,21 +7,23 @@
 #define formato_fichero ".dat"      // definimos el formato de fichero. En este caso, extension .dat
 
 
-int init_implementacion(){
+int init_implementacion()
+{
     //Esta función borra todos los ficheros que representan las claves en el directorio peticion_root
     DIR *dir;
     struct dirent *ent;
     dir = opendir(peticion_root);
-    if (dir == NULL) {
+    if (dir == NULL) 
+    {
         perror("Error al abrir el directorio");
         return -1;
     }
 
     //Recorremos el directorio
-    while ((ent = readdir(dir)) != NULL) {
+    while ((ent = readdir(dir)) != NULL) 
+    {
             //Borrarmos todo el contenido
             remove(ent->d_name);
-        
     }
 
     closedir(dir);
@@ -30,7 +32,8 @@ int init_implementacion(){
 }
 
 
-int set_value_implementacion(struct tupla_pet peticion) {
+int set_value_implementacion(struct tupla_pet peticion) 
+{
 
     FILE *fichero_peticion;
     char str_key[20];
@@ -40,17 +43,21 @@ int set_value_implementacion(struct tupla_pet peticion) {
     sprintf(nombre_fichero, "%s%s%s", peticion_root, str_key, formato_fichero);
     // Comprobamos si no hay existencia del fichero
 
-    if (access(nombre_fichero, F_OK) == 0) {
+    if (access(nombre_fichero, F_OK) == 0) 
+    {
         perror("La clave existe");
         return -1;
     }
 
     fichero_peticion = fopen(nombre_fichero, "wb");
 
-    if (fichero_peticion != NULL) {
+    if (fichero_peticion != NULL) 
+    {
         fwrite(&peticion, sizeof(struct tupla_pet), 1, fichero_peticion); 
         fclose(fichero_peticion);  
-    } else {
+    } 
+    else 
+    {
         printf("No se pudo abrir el archivo.\n");
     }
    
@@ -58,7 +65,8 @@ int set_value_implementacion(struct tupla_pet peticion) {
    return 0;
 }
 
-struct tupla_pet get_value_implementacion(struct tupla_pet tupla){
+struct tupla_pet get_value_implementacion(struct tupla_pet tupla)
+{
     //Esta función devuelve un struct que representa los valores de la clave key
 
     //creamos el struct que vamos a devolver
@@ -72,15 +80,19 @@ struct tupla_pet get_value_implementacion(struct tupla_pet tupla){
     sprintf(nombre_fichero, "%s%s%s", peticion_root, str_key, formato_fichero);
 
     // Comprobamos si no hay existencia del fichero
-    if (access(nombre_fichero, F_OK) != 0) {
+    if (access(nombre_fichero, F_OK) != 0) 
+    {
         perror("La clave no existe");
     }
 
    FILE *archivo = fopen(nombre_fichero, "rb");  // Abrir el archivo para lectura binaria
-    if (archivo != NULL) {
+    if (archivo != NULL) 
+    {
         fread(&get, sizeof(struct tupla_pet), 1, archivo);  // Leer la estructura desde el archivo
         fclose(archivo);  // Cerrar el archivo
-    } else {
+    } 
+    else 
+    {
         printf("No se pudo abrir el archivo.\n");
     }
     fclose(archivo);
@@ -89,7 +101,8 @@ struct tupla_pet get_value_implementacion(struct tupla_pet tupla){
 
 
 
-int modify_value_implementacion(struct tupla_pet peticion) {
+int modify_value_implementacion(struct tupla_pet peticion) 
+{
     //Esta función modifica el fichero que representa la clave key con los nuevos valores
     char str_key[20];
     //char peticion[50];
@@ -100,7 +113,9 @@ int modify_value_implementacion(struct tupla_pet peticion) {
     sprintf(nombre_fichero, "%s%s%s", peticion_root, str_key, formato_fichero);
 
     FILE *archivo = fopen(nombre_fichero, "r+b");
-    if (archivo == NULL) {
+    
+    if (archivo == NULL) 
+    {
         perror("Modify_value_impl(): Error al abrir el archivo\n");
         return -1;
     }
@@ -128,37 +143,8 @@ int modify_value_implementacion(struct tupla_pet peticion) {
 
 }
 
-int delete_key_implementacion(int key){
-    //esta función elimina el fichero que representa la clave key
-  //  FILE *fichero_peticion;
-    char str_key[20];
-    char peticion[50];
-    
-    sprintf(str_key, "%d", key);
-    strcpy(peticion, peticion_root);
-    strcat(peticion, str_key);
-
-    // Comprobamos si hay existencia del fichero
-    if (access(peticion, F_OK) != 0) {
-        perror("El fichero no existe");
-        return -1;
-    }
-
-    //eliminamos el fichero
-    if (remove(peticion) == 0) {
-        printf("Fichero eliminado correctamente");
-    } else {
-        perror("Error al eliminar el fichero");
-        return -1;
-    }
-    return 0;
-
-}
-
-int exist_key_implementacion(int key){
-    //Esta función devuelve 1 si existe el fichero que representa la clave key y 0 en caso contrario
-    //FILE *fichero_peticion;
-   
+int delete_key_implementacion(int key)
+{
     char str_key[20];
     //char peticion[50];
     char nombre_fichero[50];
@@ -166,13 +152,46 @@ int exist_key_implementacion(int key){
 
     sprintf(str_key, "%d", key);
     sprintf(nombre_fichero, "%s%s%s", peticion_root, str_key, formato_fichero);
+    printf("\nEL nombre del fichero es %s\n", nombre_fichero);
+    // Comprobamos si hay existencia del fichero
+    if (access(nombre_fichero, F_OK) != 0) 
+    {
+        perror("delete_key_implementacion");
+        return -1;
+    }
+
+    //eliminamos el fichero
+    if (remove(nombre_fichero) == 0) 
+    {
+        printf("Fichero eliminado correctamente");
+    } 
+    else 
+    {
+        perror("Error al eliminar el fichero");
+        return -1;
+    }
+    
+    return 0;
+
+}
+
+int exist_key_implementacion(int key)
+{
+    char str_key[20];
+    //char peticion[50];
+    char nombre_fichero[50];
+
+    sprintf(str_key, "%d", key);
+    sprintf(nombre_fichero, "%s%s%s", peticion_root, str_key, formato_fichero);
 
     // Comprobamos si no hay existencia del fichero
-    if (access(nombre_fichero, F_OK) != 0) {
+    if (access(nombre_fichero, F_OK) != 0) 
+    {
         printf("El fichero nooooooooo existe\n");
         return -1;
     }
     printf("El fichero sí existe\n");
+    
     return 0;
 }
 
