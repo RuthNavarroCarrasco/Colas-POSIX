@@ -1,19 +1,27 @@
-# Nombre del archivo ejecutable
-TARGET = nombre_del_ejecutable
-
-# Archivos fuente
-SRCS = implementacion.c cliente.c servidor.c claves.c
-
-# Flags de compilación
-CFLAGS = -Wall -Wextra -pedantic -pthread
-
-# Comando de compilación
 CC = gcc
+CFLAGS = -Wall -Werror -Wextra -g
+LDFLAGS = -L. -lrt
 
-all: $(TARGET)
 
-$(TARGET): $(SRCS)
-	$(CC) $(CFLAGS) -o $(TARGET) $(SRCS)
+CLIENT = cliente.c
+LIB_FILES = claves.c
+LIB = libclaves.so
+LIB_FLAGS_COMP = -c -fPIC
+LIB_FLAGS_LINK = -shared -o
+LIB_OBJS = $(LIB_FILES:.c=.o)
 
-clean:
-	rm -f $(TARGET)
+
+all: cliente servidor
+#	rm ../peticion/*
+cliente: $(CLIENT) $(LIB)
+	$(CC) $(DFLAGS) cliente.c -lclaves -o cliente $(LDFLAGS)
+
+$(LIB): $(LIB_FILES)
+	$(CC) $(LIB_FLAGS_COMP) $(DFLAGS) $(LIB_FILES)
+	$(CC) $(LIB_FLAGS_LINK) $(LIB) $(LIB_OBJS) -lrt
+	
+SERVER = servidor.c implementacion.c
+
+servidor: $(SERVER) 
+	$(CC) $(DFLAGS) $(SERVER) -lpthread -lrt -o servidor
+

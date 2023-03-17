@@ -40,7 +40,7 @@ int set_value_implementacion(struct tupla_pet peticion) {
     sprintf(nombre_fichero, "%s%s%s", peticion_root, str_key, formato_fichero);
     // Comprobamos si no hay existencia del fichero
 
-    if (access(nombre_fichero, F_OK) != 0) {
+    if (access(nombre_fichero, F_OK) == 0) {
         perror("La clave no existe");
         return -1;
     }
@@ -53,7 +53,7 @@ int set_value_implementacion(struct tupla_pet peticion) {
     } else {
         printf("No se pudo abrir el archivo.\n");
     }
-    fclose(fichero_peticion);
+   
 
    return 0;
 }

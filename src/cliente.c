@@ -12,6 +12,7 @@ double valor3 = 1.22;
 int clave2 = 23;
 
 
+
 int main() 
 {
     int code_error;
@@ -22,7 +23,7 @@ int main()
         printf("init(): código de error %d\n", code_error);
     }*/
 
-    code_error = set_value(clave, valor1, &valor2, valor3);
+    code_error = set_value(clave, valor1, valor2, valor3);
     if (code_error < 0) 
     {
         printf("set_value(): código de error %d\n", code_error);
