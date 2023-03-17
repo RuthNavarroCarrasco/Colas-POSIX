@@ -45,22 +45,24 @@ void tratar_mensaje(void *mess) {
     //imrpirmir codigo de operacion
     
     //leemos y ejecutamos la petición
-    if (mensaje.c_op == 0) //init
-        resultado = init_implementacion();
+   // if (mensaje.c_op == 0) //init
+     //   resultado = init_implementacion();
    if (mensaje.c_op  == 1){
         fprintf(stderr, "El código de operacion del set value %d\n", mensaje.c_op);
         //imprimir clave del mensaje
         fprintf(stderr, "La clave del mensaje es %d\n", mensaje.tupla_peticion.clave);
         resultado = set_value_implementacion(mensaje.tupla_peticion);}
     /* if (mensaje.c_op == 2); //get 
-        get_value_implementacion();
+        get_value_implementacion();*/
     if (mensaje.c_op  == 3)//mod
-        modify_value_implementacion();
-    if (mensaje.c_op == 4) //del
-        delete_key_implementacion();
+        resultado = modify_value_implementacion(mensaje.tupla_peticion);
+   // if (mensaje.c_op == 4) //del
+     //   delete_key_implementacion(mensaje.tupla_peticion.clave);
     if (mensaje.c_op  == 5)//exit
-       exist_key_implementacion();*/
+       exist_key_implementacion(mensaje.tupla_peticion.clave);
 
+
+    fprintf(stderr, "El valor del resultado es %d\n", resultado);
     respuesta.code_error = resultado;
 
     //se devuelve el resultado al cliente enviándolo a su cola

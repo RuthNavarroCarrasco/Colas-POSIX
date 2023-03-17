@@ -41,7 +41,7 @@ int set_value_implementacion(struct tupla_pet peticion) {
     // Comprobamos si no hay existencia del fichero
 
     if (access(nombre_fichero, F_OK) == 0) {
-        perror("La clave no existe");
+        perror("La clave existe");
         return -1;
     }
 
@@ -91,20 +91,21 @@ struct tupla_pet get_value_implementacion(struct tupla_pet tupla){
 
 int modify_value_implementacion(struct tupla_pet peticion) {
     //Esta función modifica el fichero que representa la clave key con los nuevos valores
-
     char str_key[20];
     //char peticion[50];
     char nombre_fichero[50];
+    struct tupla_pet pet;
 
     sprintf(str_key, "%d", peticion.clave);
     sprintf(nombre_fichero, "%s%s%s", peticion_root, str_key, formato_fichero);
 
     FILE *archivo = fopen(nombre_fichero, "r+b");
     if (archivo == NULL) {
-        perror("Error al abrir el archivo\n");
+        perror("Modify_value_impl(): Error al abrir el archivo\n");
         return -1;
     }
-
+    //fread(&pet, sizeof(struct tupla_pet), 1, archivo);
+    //printf("Clave %d\n", pet.clave);
     // Mover el puntero de posición al inicio del archivo
     fseek(archivo, 0, SEEK_SET);
 
@@ -120,7 +121,9 @@ int modify_value_implementacion(struct tupla_pet peticion) {
 
     fclose(archivo);
     printf("Se modificó\n");
-
+    /*FILE *f = fopen(nombre_fichero, "r+b");
+    fread(&pet, sizeof(struct tupla_pet), 1, f);
+    printf("Clave %d\n", pet.clave);*/
     return 0;
 
 }
@@ -152,21 +155,25 @@ int delete_key_implementacion(int key){
 
 }
 
-int exist_implementacion(int key){
+int exist_key_implementacion(int key){
     //Esta función devuelve 1 si existe el fichero que representa la clave key y 0 en caso contrario
     //FILE *fichero_peticion;
+   
     char str_key[20];
-    char peticion[50];
+    //char peticion[50];
+    char nombre_fichero[50];
+    
 
     sprintf(str_key, "%d", key);
-    strcpy(peticion, peticion_root);
-    strcat(peticion, str_key);
+    sprintf(nombre_fichero, "%s%s%s", peticion_root, str_key, formato_fichero);
 
     // Comprobamos si no hay existencia del fichero
-    if (access(peticion, F_OK) != 0) {
-        printf("El fichero no existe");
-        return 0;
+    if (access(nombre_fichero, F_OK) != 0) {
+        printf("El fichero nooooooooo existe\n");
+        return -1;
     }
-    printf("El fichero sí existe");
-    return 1;
+    printf("El fichero sí existe\n");
+    return 0;
 }
+
+

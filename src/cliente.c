@@ -34,19 +34,19 @@ int main()
     if (code_error < 0) 
     {
         printf("get_value(): código de error %d\n", code_error);
-    }
+    }*/
 
-    code_error = modify_value(clave, valor1, &valor2, valor3);
+    code_error = modify_value(clave, valor1, valor2, valor3);
     if (code_error < 0) 
     {
         printf("modify_value(): código de error %d\n", code_error);
     }
 
-    code_error = delete_key(clave);
-    if (code_error < 0) 
-    {
-        printf("delete_key(): código de error %d\n", code_error);
-    }
+   // code_error = delete_key(clave);
+   // if (code_error < 0) 
+    //{
+      //  printf("delete_key(): código de error %d\n", code_error);
+    //}
 
     code_error = exist_key(clave);
     if (code_error < 0) 
@@ -54,7 +54,7 @@ int main()
         printf("exist_key(): código de error %d\n", code_error);
     }
 
-    code_error = copy_key(clave, clave2);
+    /*code_error = copy_key(clave, clave2);
     if (code_error < 0) 
     {
         printf("copy_key(): código de error %d\n", code_error);

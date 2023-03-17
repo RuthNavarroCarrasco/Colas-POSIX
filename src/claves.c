@@ -37,10 +37,11 @@ int send_recieve(struct peticion *peticion) {
 
 
     //sprintf(q_client, "%s", peticion->q_name) ;
+    fprintf(stderr, "El nombre de la cola es %s\n", peticion->q_name);
     qc = mq_open( peticion->q_name, O_CREAT|O_RDONLY, 0664, &attr) ;  // se abre la cola del cliente
     if (qc == -1) 
     {
-        perror("mq_open: ") ;
+        perror("mq_open aqui: ") ;
         mq_close(qs) ;
         return -1;
     }
@@ -135,6 +136,9 @@ int get_value(int key, char *value1, int value2, double value3) {
     peticion.tupla_peticion.valor2 = value2;
     peticion.tupla_peticion.valor3 = value3;
     peticion.c_op = 2;
+
+    sprintf(peticion.q_name, "/cliente_%d", getpid());
+    
     int code_error = send_recieve(&peticion);
 
     return code_error;
@@ -149,6 +153,8 @@ int modify_value(int key, char *value1, int value2, double value3){
     peticion.tupla_peticion.valor2 = value2;
     peticion.tupla_peticion.valor3 = value3;
     peticion.c_op = 3;
+    sprintf(peticion.q_name, "/cliente_%d", getpid());
+
     int code_error = send_recieve(&peticion);
 
     return code_error;
@@ -161,6 +167,8 @@ int delete_key(int id) {
         .tupla_peticion.clave = id,
         .c_op = 4
     };
+    sprintf(peticion.q_name, "/cliente_%d", getpid());
+
 
     int code_error = send_recieve(&peticion);
 
@@ -175,6 +183,9 @@ int exist_key(int id) {
         .tupla_peticion.valor2 = 0,
         .c_op = 5
     };
+
+    sprintf(peticion.q_name, "/cliente_%d", getpid());
+
     int code_error = send_recieve(&peticion);
 
     return code_error;
