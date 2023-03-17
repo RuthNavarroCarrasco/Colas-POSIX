@@ -102,6 +102,8 @@ int init()
     struct peticion peticion = {0};
     peticion.c_op = 0;
 
+    sprintf(peticion.q_name, "/cliente_%d", getpid());
+
     int code_error = send_recieve(&peticion);
     return code_error;
 }
@@ -202,6 +204,7 @@ int copy_key(int key1, int key2)
         .clave2 = key2,
         .c_op = 6
     };
+    sprintf(peticion.q_name, "/cliente_%d", getpid());
     int code_error = send_recieve(&peticion);
 
     return code_error;

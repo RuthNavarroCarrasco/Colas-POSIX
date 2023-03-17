@@ -39,22 +39,24 @@ void tratar_mensaje(void *mess)
     //leemos y ejecutamos la petición
 
     
-   // if (mensaje.c_op == 0) //init
-     //   resultado = init_implementacion();
+    if (mensaje.c_op == 0) {//init
+    fprintf(stderr, "\n\n Me meto porque me toca init\n");
+        resultado = init_implementacion();}
    if (mensaje.c_op  == 1)
         resultado = set_value_implementacion(mensaje.tupla_peticion);
-    /* if (mensaje.c_op == 2); //get 
-        get_value_implementacion();*/
-    if (mensaje.c_op  == 3)//mod
+     if (mensaje.c_op == 2) //get 
+        resultado = get_value_implementacion(mensaje.tupla_peticion, &respuesta);
+    if (mensaje.c_op  == 3) //mod
         resultado = modify_value_implementacion(mensaje.tupla_peticion);
     if (mensaje.c_op == 4) //del
         resultado = delete_key_implementacion(mensaje.tupla_peticion.clave);
-     if (mensaje.c_op  == 5)//exist
-       exist_key_implementacion(mensaje.tupla_peticion.clave);
+    if (mensaje.c_op  == 5) //exist
+       resultado = exist_key_implementacion(mensaje.tupla_peticion.clave);
+    if (mensaje.c_op  == 6) //copy
+       resultado = copy_key_implementacion(mensaje.tupla_peticion.clave, mensaje.clave2);
     
     fprintf(stderr, "El valor del resultado es %d\n", resultado);
     respuesta.code_error = resultado;
-
     //se devuelve el resultado al cliente enviándolo a su cola
     q_cliente = mq_open(mensaje.q_name, O_WRONLY);
 

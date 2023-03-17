@@ -17,39 +17,15 @@ int main()
 {
     int code_error;
 
-    /*code_error = init();
-    if (code_error < 0) 
-    {
-        printf("init(): código de error %d\n", code_error);
-    }*/
-
-    code_error = set_value(clave, valor1, valor2, valor3);
-    if (code_error < 0) 
-    {
-        printf("set_value(): código de error %d\n", code_error);
-    }
-
-    /*
-    code_error = get_value(clave, valor1, &valor2, valor3);
-    if (code_error < 0) 
-    {
-        printf("get_value(): código de error %d\n", code_error);
-    }*/
-
-    code_error = modify_value(clave, valor1, valor2, valor3);
-    if (code_error < 0) 
-    {
-        printf("modify_value(): código de error %d\n", code_error);
-    }
+    
 
    
 
-    code_error = exist_key(clave);
+    code_error = copy_key(clave, clave2);
     if (code_error < 0) 
     {
-        printf("exist_key(): código de error %d\n", code_error);
+        printf("copy_key(): código de error %d\n", code_error);
     }
-
     
     /*code_error = copy_key(clave, clave2);
     if (code_error < 0) 
