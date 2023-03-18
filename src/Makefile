@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -Wall -Werror -Wextra -g
 LDFLAGS = -L. -lrt
 
-CLIENT = cliente.c cliente2.c cliente3.c
+CLIENT = cliente.c cliente2.c
 LIB_FILES = claves.c
 LIB = libclaves.so
 LIB_FLAGS_COMP = -c -fPIC
@@ -17,7 +17,7 @@ all: cliente servidor
 cliente: $(CLIENT) $(LIB)
 	$(CC) $(DFLAGS) cliente.c -lclaves -o cliente $(LDFLAGS)
 	$(CC) $(DFLAGS) cliente2.c -lclaves -o cliente2 $(LDFLAGS)
-	$(CC) $(DFLAGS) cliente3.c -lclaves -o cliente3 $(LDFLAGS)
+
 
 
 $(LIB): $(LIB_FILES)

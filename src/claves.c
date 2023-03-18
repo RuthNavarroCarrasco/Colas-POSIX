@@ -81,7 +81,10 @@ int send_recieve(struct peticion *peticion) {
 	    perror("mq_unlink: ") ;
      }
 
-
+    // guardamos los valores de la resuesta para el caso en el que sea necesario devolverlos (f. get)
+    strcpy(peticion->tupla_peticion.valor1,respuesta.tupla_peticion.valor1);
+    peticion->tupla_peticion.valor2 = respuesta.tupla_peticion.valor2;
+    peticion->tupla_peticion.valor3 = respuesta.tupla_peticion.valor3;
     return respuesta.code_error;
 }
 
@@ -117,19 +120,20 @@ int set_value(int key, char *value1, int value2, double value3) {
 }
 
 
-int get_value(int key, char *value1, int value2, double value3) {
+int get_value(int key, char *value1, int *value2, double *value3) {
     //creamos la peticion 
     struct peticion peticion = {0};
     peticion.tupla_peticion.clave = key;
-    strcpy(peticion.tupla_peticion.valor1, value1);
-    peticion.tupla_peticion.valor2 = value2;
-    peticion.tupla_peticion.valor3 = value3;
+    
     peticion.c_op = 2;
 
     sprintf(peticion.q_name, "/cliente_%d", getpid());
     
     int code_error = send_recieve(&peticion );
     
+    strcpy(value1, peticion.tupla_peticion.valor1);
+    *value2 = peticion.tupla_peticion.valor2;
+    *value3 = peticion.tupla_peticion.valor3;
     
     return code_error;
 }

@@ -183,7 +183,6 @@ int exist_key_implementacion(int key)
         printf("exist_key(): El fichero no existe\n");
         return -1;
     }
-    printf("El fichero sí existe\n");
     
     return 0;
 }
@@ -219,7 +218,6 @@ int copy_key_implementacion(int key1, int key2){
         return -1;
     }
     peticion_copiada.clave = key2;
-    fprintf(stderr, "El valor de la clave 2 em pet es %d\n", peticion_copiada.clave);
 
     //si key2 existese modifica
 
