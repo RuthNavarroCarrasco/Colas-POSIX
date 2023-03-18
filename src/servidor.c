@@ -21,7 +21,6 @@ void tratar_mensaje(void *mess)
     struct peticion mensaje;	        //mensaje local 
     struct respuesta respuesta;	        // respuesta local 
 	mqd_t q_cliente;		            // cola del cliente 
-    
     int resultado;		                // resultado de la operación 
 
     pthread_mutex_lock(&mutex_mensaje);
@@ -31,36 +30,37 @@ void tratar_mensaje(void *mess)
     
     //Como ya se ha copiado el mensaje, despetarmos al servidor 
     mensaje_no_copiado = false;
-
     pthread_cond_signal(&cond_mensaje);
-
 	pthread_mutex_unlock(&mutex_mensaje);
     
     //leemos y ejecutamos la petición
 
-    
     if (mensaje.c_op == 0) {//init
     fprintf(stderr, "\n\n Me meto porque me toca init\n");
         resultado = init_implementacion();}
-   if (mensaje.c_op  == 1)
+
+   if (mensaje.c_op  == 1) //set
         resultado = set_value_implementacion(mensaje.tupla_peticion);
+
      if (mensaje.c_op == 2){ //get 
         resultado = get_value_implementacion(mensaje.tupla_peticion, &respuesta); 
         //imprimir valores devueltos a la tupla respuesta
-        //fprintf(stderr, "El valor de la clave es %d %s %d %f\n", respuesta.tupla_peticion.clave, respuesta.tupla_peticion.valor1, respuesta.tupla_peticion.valor2, respuesta.tupla_peticion.valor3);
+        fprintf(stderr, "El valor de la TUPLA es %d %s %d %f\n", respuesta.tupla_peticion.clave, respuesta.tupla_peticion.valor1, respuesta.tupla_peticion.valor2, respuesta.tupla_peticion.valor3);
      }
     if (mensaje.c_op  == 3) //mod
         resultado = modify_value_implementacion(mensaje.tupla_peticion);
+
     if (mensaje.c_op == 4) //del
         resultado = delete_key_implementacion(mensaje.tupla_peticion.clave);
+
     if (mensaje.c_op  == 5) //exist
        resultado = exist_key_implementacion(mensaje.tupla_peticion.clave);
+
     if (mensaje.c_op  == 6) //copy
        resultado = copy_key_implementacion(mensaje.tupla_peticion.clave, mensaje.clave2);
     
-    fprintf(stderr, "El valor del resultado es %d\n", resultado);
     respuesta.code_error = resultado;
-    //se devuelve el resultado al cliente enviándolo a su cola
+    //se abre la cola del cliente y se le devuelve el resultado enviándolo a su cola
     q_cliente = mq_open(mensaje.q_name, O_WRONLY);
 
 	if (q_cliente == -1)
@@ -71,8 +71,7 @@ void tratar_mensaje(void *mess)
 	}
 
     else 
-    {
-        
+    {   
 		if (mq_send(q_cliente, (char *)&respuesta, sizeof(struct respuesta), 0) <0) 
         {
 			perror("tratar_mensaje(): mq_send");
@@ -89,16 +88,11 @@ void tratar_mensaje(void *mess)
 	pthread_exit(0);
 }
 
-
-
-
 int main(void){
     struct peticion mess;
     struct mq_attr attr;
-
-	pthread_attr_t t_attr;		// atributos de los threads 
+	pthread_attr_t t_attr;		
    	pthread_t thid;
-
 
     attr.mq_maxmsg = 5;                
 	attr.mq_msgsize = sizeof(struct peticion);
@@ -120,12 +114,11 @@ int main(void){
 
     while(1) {
         
+        //se recibe la petición del cliente
         if (mq_receive(q_servidor, (char *) &mess, sizeof(struct peticion), 0) < 0 ){
 			perror("mq_recev");
 			return -1;
 		}
-        //imprir código de operación recibido:
-        printf("Código de operación recibido: %d, cola del cliente: %s\n", mess.c_op, mess.q_name);
 
         if (pthread_create(&thid, &t_attr, (void *)tratar_mensaje, (void *)&mess) == 0) {
             // se espera a que el thread copie el mensaje 

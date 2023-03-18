@@ -12,16 +12,14 @@
 
 #define SERVIDOR "/SERVIDOR34"
 
-int send_recieve(struct peticion *peticion) 
-{
+int send_recieve(struct peticion *peticion) {
     int ret;
     char q_client[1024];
     struct mq_attr attr;        // atributos de la cola
     int qs, qc;                
     struct respuesta respuesta;
 
-    /* Inicializar los atributos de la cola */
-    //attr.mq_flags   = 0 ;
+    /* Inicializar los atributos de la cola del cliente */
     attr.mq_maxmsg  = 10 ;
     attr.mq_msgsize = sizeof(struct respuesta) ;
 
@@ -33,21 +31,14 @@ int send_recieve(struct peticion *peticion)
         return -1 ;
     }
 
-
-
-    //sprintf(q_client, "%s", peticion->q_name) ;
     
-    qc = mq_open( peticion->q_name, O_CREAT|O_RDONLY, 0664, &attr) ;  // se abre la cola del cliente
+    qc = mq_open(peticion->q_name, O_CREAT|O_RDONLY, 0664, &attr) ;  // se abre la cola del cliente
     if (qc == -1) 
     {
         perror("mq_open CLIENTE: ") ;
         mq_close(qs) ;
         return -1;
     }
-
-    
-    //strcpy(peticion->q_name, q_client);
-    
 
     ret = mq_send(qs, (char *)peticion, sizeof(struct peticion), 0) ; 
     if (ret < 0) 
@@ -59,8 +50,6 @@ int send_recieve(struct peticion *peticion)
         mq_unlink(q_client) ;
         return -1;
     }
-
-    
 
 
     ret = mq_receive(qc, (char *)&respuesta, sizeof(struct respuesta), 0) ; //recibir respuesta del servidor
@@ -92,13 +81,15 @@ int send_recieve(struct peticion *peticion)
 	    perror("mq_unlink: ") ;
      }
 
+
     return respuesta.code_error;
 }
 
 
 
-int init() 
-{
+int init() {
+
+    //creamos la peticion
     struct peticion peticion = {0};
     peticion.c_op = 0;
 
@@ -108,17 +99,15 @@ int init()
     return code_error;
 }
 
-int set_value(int key, char *value1, int value2, double value3) 
-{
-    //Esta función crea la petición con el código de operación correspondiente a INIT y llama a send_receive para enviarla y recibir la respuesta
-    
-    //creamos la peticion 
+int set_value(int key, char *value1, int value2, double value3) {
 
+    //creamos la peticion 
     struct peticion peticion = {0};
     peticion.tupla_peticion.clave = key;
     strcpy(peticion.tupla_peticion.valor1, value1);
     peticion.tupla_peticion.valor2 = value2;
     peticion.tupla_peticion.valor3 = value3;
+    
     sprintf(peticion.q_name, "/cliente_%d", getpid());
     
     peticion.c_op = 1;
@@ -128,8 +117,7 @@ int set_value(int key, char *value1, int value2, double value3)
 }
 
 
-int get_value(int key, char *value1, int value2, double value3) 
-{
+int get_value(int key, char *value1, int value2, double value3) {
     //creamos la peticion 
     struct peticion peticion = {0};
     peticion.tupla_peticion.clave = key;
@@ -140,22 +128,22 @@ int get_value(int key, char *value1, int value2, double value3)
 
     sprintf(peticion.q_name, "/cliente_%d", getpid());
     
-    int code_error = send_recieve(&peticion);
-
+    int code_error = send_recieve(&peticion );
+    
+    
     return code_error;
 }
 
 
-int modify_value(int key, char *value1, int value2, double value3)
-{
+int modify_value(int key, char *value1, int value2, double value3){
     //creamos la peticion 
-
     struct peticion peticion = {0};
     peticion.tupla_peticion.clave = key;
     strcpy(peticion.tupla_peticion.valor1, value1);
     peticion.tupla_peticion.valor2 = value2;
     peticion.tupla_peticion.valor3 = value3;
     peticion.c_op = 3;
+    
     sprintf(peticion.q_name, "/cliente_%d", getpid());
 
     int code_error = send_recieve(&peticion);
@@ -164,15 +152,15 @@ int modify_value(int key, char *value1, int value2, double value3)
 }
 
 
-int delete_key(int id) 
-{
+int delete_key(int id) {
+
     //creamos la peticion 
     struct peticion peticion = {
         .tupla_peticion.clave = id,
         .c_op = 4
     };
+    
     sprintf(peticion.q_name, "/cliente_%d", getpid());
-
 
     int code_error = send_recieve(&peticion);
 
@@ -181,8 +169,9 @@ int delete_key(int id)
 
 
 
-int exist_key(int id) 
-{
+int exist_key(int id) {
+
+    //creamos la peticion 
     struct peticion peticion = {
         .tupla_peticion.clave = id,
         .tupla_peticion.valor2 = 0,
@@ -197,14 +186,17 @@ int exist_key(int id)
 }
 
 
-int copy_key(int key1, int key2) 
-{   
+int copy_key(int key1, int key2) {  
+
+    //creamos la peticion 
     struct peticion peticion = {
         .tupla_peticion.clave = key1,
         .clave2 = key2,
         .c_op = 6
     };
+    
     sprintf(peticion.q_name, "/cliente_%d", getpid());
+
     int code_error = send_recieve(&peticion);
 
     return code_error;
