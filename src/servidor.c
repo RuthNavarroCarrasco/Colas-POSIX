@@ -44,8 +44,11 @@ void tratar_mensaje(void *mess)
         resultado = init_implementacion();}
    if (mensaje.c_op  == 1)
         resultado = set_value_implementacion(mensaje.tupla_peticion);
-     if (mensaje.c_op == 2) //get 
-        resultado = get_value_implementacion(mensaje.tupla_peticion, &respuesta);
+     if (mensaje.c_op == 2){ //get 
+        resultado = get_value_implementacion(mensaje.tupla_peticion, &respuesta); 
+        //imprimir valores devueltos a la tupla respuesta
+        //fprintf(stderr, "El valor de la clave es %d %s %d %f\n", respuesta.tupla_peticion.clave, respuesta.tupla_peticion.valor1, respuesta.tupla_peticion.valor2, respuesta.tupla_peticion.valor3);
+     }
     if (mensaje.c_op  == 3) //mod
         resultado = modify_value_implementacion(mensaje.tupla_peticion);
     if (mensaje.c_op == 4) //del

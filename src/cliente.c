@@ -36,6 +36,7 @@ int main()
         printf("get_value(): código de error %d\n", code_error);
     }
 
+    /*
     code_error = modify_value(clave, valor1, valor2, valor3);
     if (code_error < 0) 
     {
@@ -51,7 +52,7 @@ int main()
     }
 
     
-    
+    */
     
           
     return 0; 

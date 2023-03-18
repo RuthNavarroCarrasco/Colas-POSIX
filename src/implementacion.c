@@ -10,25 +10,18 @@
 int init_implementacion()
 {   
     //Esta función borra todos los ficheros que representan las claves en el directorio peticion_root
-    
+    DIR *theFolder = opendir(peticion_root);
+    struct dirent *next_file;
+    char filepath[400];
 
-    DIR *dir;
-    struct dirent *ent;
-    dir = opendir(peticion_root);
-    if (dir == NULL) 
+    while ( (next_file = readdir(theFolder)) != NULL )
     {
-        perror("Error al abrir el directorio");
-        return -1;
+        // build the path for each file in the folder
+        sprintf(filepath, "%s/%s", "../peticion/", next_file->d_name);
+        remove(filepath);
     }
-
-    //Recorremos el directorio
-    while ((ent = readdir(dir)) != NULL) 
-    {
-            //Borrarmos todo el contenido
-            remove(ent->d_name);
-    }
-
-    closedir(dir);
+    closedir(theFolder);
+    return 0;
 
     return 0;
 }
