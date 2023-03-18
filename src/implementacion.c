@@ -3,7 +3,7 @@
 #include <dirent.h>
 #include <string.h>
 #include "implementacion.h"
-#define peticion_root "../peticion/" // raiz para coger los ficheros
+#define peticion_root "../tuplas/" // raiz para coger los ficheros
 #define formato_fichero ".dat"      // definimos el formato de fichero. En este caso, extension .dat
 
 
@@ -18,7 +18,7 @@ int init_implementacion()
     while ( (next_file = readdir(theFolder)) != NULL )
     {
         // build the path for each file in the folder
-        sprintf(filepath, "%s/%s", "../peticion/", next_file->d_name);
+        sprintf(filepath, "%s/%s", "../tuplas/", next_file->d_name);
         remove(filepath);
     }
     closedir(theFolder);

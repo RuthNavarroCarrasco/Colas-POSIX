@@ -6,7 +6,7 @@
 #include "comunicacion.h"
 #include "implementacion.h"
 
-#define SERVIDOR "/SERVIDOR34"
+#define SERVIDOR "/SERVIDOR"
 
 mqd_t  q_servidor;
 

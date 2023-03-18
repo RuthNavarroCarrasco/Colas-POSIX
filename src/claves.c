@@ -10,7 +10,7 @@
 #define peticion_root "../peticion/" // raiz para coger los ficheros
 #define formato_fichero ".dat"      // definimos el formato de fichero. En este caso, extension .dat
 
-#define SERVIDOR "/SERVIDOR34"
+#define SERVIDOR "/SERVIDOR"
 
 int send_recieve(struct peticion *peticion) {
     int ret;
